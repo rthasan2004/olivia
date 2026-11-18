@@ -54,6 +54,9 @@ footer{margin-top:48px;background:var(--blush);text-align:center;padding:30px 20
 footer .logo{font-size:34px}
 footer .socs{justify-content:center;margin-top:14px}
 footer .soc{width:34px;height:34px;line-height:34px;font-size:12px}
+.adslot{display:flex;justify-content:center;max-width:100%;overflow:hidden;margin:18px auto}
+.adslot:empty{display:none;margin:0}
+.adslot iframe{border:0;max-width:100%;display:block}
 @media(max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr);gap:12px}.bar .socs{display:none}.bar{grid-template-columns:1fr auto}.brand{grid-column:1;text-align:left}.card h3{font-size:19px;padding:10px 10px 14px}}
 
@@ -101,23 +104,32 @@ article{animation:rise .8s ease-out backwards}
 </style>
 </head>
 <body>
+
 <header>
   <div class="bar">
     <div class="socs"><a class="soc" href="#" aria-label="Facebook">f</a><a class="soc" href="#" aria-label="Pinterest">P</a><a class="soc" href="#" aria-label="Instagram">IG</a><a class="soc" href="#" aria-label="YouTube">YT</a></div>
-    <a class="brand" href="#" id="brand"><span class="mark"><i></i><b>♡</b><i></i></span><span class="logo">OLIVIA IDEA</span><span class="tag">Beauty • Fashion • Inspiration</span></a>
+    <a class="brand" href="./" id="brand"><span class="mark"><i></i><b>♡</b><i></i></span><span class="logo">OLIVIA IDEA</span><span class="tag">Beauty • Fashion • Inspiration</span></a>
     <button class="srch" id="sbtn" aria-label="Search"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
   </div>
   <div class="sbox" id="sbox" hidden><input id="q" type="search" placeholder="Search ideas…" aria-label="Search ideas"></div>
   <nav class="nav"><button data-c="All">HOME</button><button data-c="Nails">NAIL</button><button data-c="Fashion">FASHION</button></nav>
 </header>
+<div class="adslot" data-ad="ad-top"></div>
 <main id="app"><div class="empty">Loading…</div></main>
+<div class="adslot" data-ad="ad-native"></div>
+<div class="adslot" data-ad="ad-bottom"></div>
 <footer>
   <span class="logo">OLIVIA IDEA</span><span class="tag">Beauty • Fashion • Inspiration</span>
   <div class="socs"><a class="soc" href="#" aria-label="Facebook">f</a><a class="soc" href="#" aria-label="Pinterest">P</a><a class="soc" href="#" aria-label="Instagram">IG</a><a class="soc" href="#" aria-label="YouTube">YT</a></div>
 </footer>
 <script>
-var P=[],app=document.getElementById("app"),filter="All",shown=8,STEP=8,q="";
+var P=[],app=document.getElementById("app"),shown=8,STEP=8,q="";
 var navb=document.querySelectorAll(".nav button");
+var Q=new URLSearchParams(location.search);
+var CP=Q.get("p")||(location.hash.indexOf("#post-")===0?location.hash.slice(6):null);
+var filter=Q.get("c")||"All";
+var isHome=!CP&&filter==="All";
+var SIZES={"ad-top":[728,90],"ad-top-m":[320,50],"ad-mid":[300,250],"ad-bottom":[300,250],"ad-native":["100%",320]};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function slug(t){return t.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"post"}
 function fmt(d){return new Date(d+"T12:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}
@@ -125,38 +137,81 @@ function paras(b){return b.split(/\n{2,}/).map(function(p){return "<p>"+esc(p).r
 function soft(c){return "color-mix(in srgb,"+esc(c||"#c9747f")+" 30%,#fff)"}
 function lab(c){return c==="Nails"?"Nail":c}
 function pic(p,chip){return '<div class="pic" style="background:'+soft(p.color)+'">'+(p.image?'<img src="'+esc(p.image)+'" alt="" loading="lazy">':'')+(chip?'<span class="chip">'+esc(lab(p.cat))+'</span>':'')+'</div>'}
-function setNav(on){[].forEach.call(navb,function(b){b.setAttribute("aria-current",on&&b.dataset.c===filter)})}
-function go(c){filter=c;shown=STEP;q="";document.getElementById("q").value="";if(location.hash.length>1)location.hash="";else home()}
+function setNav(){[].forEach.call(navb,function(b){b.setAttribute("aria-current",!CP&&b.dataset.c===filter)})}
+
+/* ---- ads (codes come from the Admin panel) ---- */
+var ADS={},ADSOK=false;
+function tpl(id){return(ADS[id]||"").trim()}
+function mountAds(root){
+  if(!ADSOK)return;
+  [].forEach.call((root||document).querySelectorAll(".adslot:not([data-done])"),function(el){
+    el.dataset.done=1;
+    var id=el.dataset.ad;
+    if(id==="ad-top"&&window.innerWidth<740&&tpl("ad-top-m"))id="ad-top-m";
+    var code=tpl(id);if(!code)return;
+    var sz=SIZES[id]||[300,250],f=document.createElement("iframe");
+    f.setAttribute("sandbox","allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation");
+    f.setAttribute("scrolling","no");f.setAttribute("width",sz[0]);f.setAttribute("height",sz[1]);f.title="Advertisement";
+    if(sz[0]==="100%")f.style.width="100%";
+    f.srcdoc='<!doctype html><html><body style="margin:0;display:flex;justify-content:center">'+code+'</body></html>';
+    el.appendChild(f);
+  });
+}
+function runScripts(code){
+  var d=document.createElement("div");d.innerHTML=code;
+  [].forEach.call(d.querySelectorAll("script"),function(o){
+    var s=document.createElement("script");
+    [].forEach.call(o.attributes,function(a){s.setAttribute(a.name,a.value)});
+    s.text=o.text;document.body.appendChild(s);
+  });
+}
+/* Social Bar and Popunder: HOME page only */
+function globalAds(){
+  if(!isHome)return;
+  ["ad-social","ad-popunder"].forEach(function(id){var c=tpl(id);if(c)runScripts(c)});
+}
+
+/* ---- navigation (full page loads so home-only ads never leak to other pages) ---- */
+function go(c){location.href=c==="All"?location.pathname:location.pathname+"?c="+encodeURIComponent(c)}
 [].forEach.call(navb,function(b){b.onclick=function(){go(b.dataset.c)}});
-document.getElementById("brand").onclick=function(e){e.preventDefault();go("All")};
 document.getElementById("sbtn").onclick=function(){var s=document.getElementById("sbox");s.hidden=!s.hidden;if(!s.hidden)document.getElementById("q").focus()};
-document.getElementById("q").oninput=function(){q=this.value.toLowerCase();shown=STEP;if(location.hash.length>1)location.hash="";else ideas()};
+document.getElementById("q").oninput=function(){if(CP)return;q=this.value.toLowerCase();shown=STEP;ideas()};
+if(CP)document.getElementById("sbtn").hidden=true;
+
 function ideas(){
   var all=P.filter(function(p){return(filter==="All"||p.cat===filter)&&(!q||(p.title+" "+p.body).toLowerCase().indexOf(q)>-1)});
-  var h=all.length?'<div class="grid">'+all.slice(0,shown).map(function(p){return '<a class="card" href="#post-'+p.id+'">'+pic(p,true)+'<h3>'+esc(p.title)+'</h3></a>'}).join("")+'</div>':'<div class="empty">No posts found.</div>';
+  var h='<div class="empty">No posts found.</div>';
+  if(all.length){
+    var cards=all.slice(0,shown).map(function(p){return '<a class="card" href="?p='+p.id+'">'+pic(p,true)+'<h3>'+esc(p.title)+'</h3></a>'});
+    if(isHome&&cards.length>4)cards.splice(4,0,'<div class="adslot" data-ad="ad-mid" style="grid-column:1/-1"></div>');
+    h='<div class="grid">'+cards.join("")+'</div>';
+  }
   if(all.length>shown)h+='<button class="more" id="more">SHOW MORE</button>';
-  document.getElementById("ideas").innerHTML=h;
+  var box=document.getElementById("ideas");box.innerHTML=h;
+  mountAds(box);
   var m=document.getElementById("more");if(m)m.onclick=function(){shown+=STEP;ideas()};
 }
-function home(){
-  document.title="Olivia Idea – Beauty, Fashion, Inspiration";setNav(true);
-  app.innerHTML='<div class="hero"><div class="wrap"><h1>A little inspiration for every day.</h1><p>Discover fresh nail art, effortless fashion and ideas worth saving.</p><a class="btn" href="#" id="ex">EXPLORE IDEAS →</a></div></div><div class="wrap"><div class="ttl" id="latest"><span></span><h2>LATEST IDEAS</h2><span></span></div><div id="ideas"></div></div>';
-  document.getElementById("ex").onclick=function(e){e.preventDefault();document.getElementById("latest").scrollIntoView({behavior:"smooth"})};
+function list(){
+  var all=filter==="All";
+  document.title=all?"Olivia Idea – Beauty, Fashion, Inspiration":lab(filter)+" Ideas – Olivia Idea";
+  setNav();
+  var hero=all?'<div class="hero"><div class="wrap"><h1>A little inspiration for every day.</h1><p>Discover fresh nail art, effortless fashion and ideas worth saving.</p><a class="btn" href="#latest" id="ex">EXPLORE IDEAS →</a></div></div>':'';
+  app.innerHTML=hero+'<div class="wrap"><div class="ttl" id="latest"><span></span><h2>'+(all?'LATEST IDEAS':esc(lab(filter)).toUpperCase()+' IDEAS')+'</h2><span></span></div><div id="ideas"></div></div>';
+  var ex=document.getElementById("ex");
+  if(ex)ex.onclick=function(e){e.preventDefault();document.getElementById("latest").scrollIntoView({behavior:"smooth"})};
   ideas();
 }
 function post(id){
   var p=P.filter(function(x){return x.id===id})[0];
-  if(!p){home();return}
-  document.title=p.title+" – Olivia Idea";setNav(false);
-  app.innerHTML='<div class="wrap"><a class="back" href="#">← All ideas</a><article>'+pic(p,false)+'<div class="meta">'+esc(lab(p.cat))+' · '+fmt(p.date)+'</div><h1>'+esc(p.title)+'</h1><div class="prose">'+paras(p.body)+'</div></article></div>';
-  window.scrollTo(0,0);
+  if(!p){CP=null;list();return}
+  document.title=p.title+" – Olivia Idea";setNav();
+  app.innerHTML='<div class="wrap"><a class="back" href="'+(p.cat==="Nails"||p.cat==="Fashion"?"?c="+encodeURIComponent(p.cat):location.pathname)+'">← '+esc(lab(p.cat))+' ideas</a><article>'+pic(p,false)+'<div class="meta">'+esc(lab(p.cat))+' · '+fmt(p.date)+'</div><h1>'+esc(p.title)+'</h1><div class="prose">'+paras(p.body)+'</div></article></div>';
 }
-function route(){var h=location.hash.slice(1);if(h.indexOf("post-")===0)post(h.slice(5));else home()}
 fetch("/api/posts").then(function(r){return r.json()}).then(function(d){return d===null?fetch("content/posts.json").then(function(r){return r.json()}).then(function(s){return s.posts||[]}):d}).then(function(d){
 P=d.map(function(p){p.id=slug(p.title);return p}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0});
-  
-  route();window.addEventListener("hashchange",route);
+if(CP)post(CP);else list();
 }).catch(function(){app.innerHTML='<div class="empty">Could not load posts.</div>'});
+fetch("/api/ads").then(function(r){return r.json()}).then(function(a){ADS=a||{}}).catch(function(){}).then(function(){ADSOK=true;mountAds();globalAds()});
 
 /* scroll reveal: cards and titles rise from the bottom as they enter the screen */
 (function(){
