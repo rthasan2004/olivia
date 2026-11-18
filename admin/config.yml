@@ -23,4 +23,5 @@ collections:
               - {label: Category, name: cat, widget: select, options: [Fashion, Nails, Style tips, Trends]}
               - {label: Date, name: date, widget: datetime, format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false}
               - {label: Cover colour, name: color, widget: color, default: "#7a2e6e"}
+              - {label: Image, name: image, widget: image, required: false}
               - {label: Text, name: body, widget: text, hint: "Leave a blank line between paragraphs"}
