@@ -150,7 +150,6 @@ function mountAds(root){
     if(id==="ad-top"&&window.innerWidth<740&&tpl("ad-top-m"))id="ad-top-m";
     var code=tpl(id);if(!code)return;
     var sz=SIZES[id]||[300,250],f=document.createElement("iframe");
-    f.setAttribute("sandbox","allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation");
     f.setAttribute("scrolling","no");f.setAttribute("width",sz[0]);f.setAttribute("height",sz[1]);f.title="Advertisement";
     if(sz[0]==="100%")f.style.width="100%";
     f.srcdoc='<!doctype html><html><body style="margin:0;display:flex;justify-content:center">'+code+'</body></html>';
