@@ -13,11 +13,13 @@ button.g{background:none;color:#2b2222;border:1.5px solid #eadbd8}button.s{paddi
 .r{display:flex;gap:10px;flex-wrap:wrap}.r>div{flex:1;min-width:130px}
 ul{margin:0;padding:0}li{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px dashed #eadbd8}
 small{color:#7d6b6b;display:block}.m{color:#7d6b6b;margin-top:10px}img.pv{max-width:140px;border-radius:8px;display:block;margin-top:8px}
+textarea.ad{min-height:90px;font:13px/1.4 ui-monospace,monospace}
 </style></head>
 <body><div class="w" id="a"></div>
 <script>
-var a=document.getElementById("a"),pw=sessionStorage.getItem("pw")||"",P=[],ed=null,img="",dl=null,note="";
+var a=document.getElementById("a"),pw=sessionStorage.getItem("pw")||"",P=[],A={},ed=null,img="",dl=null,note="";
 var CATS=["Fashion","Nails","Style tips","Trends"];
+var AD=[["ad-top","Top banner, desktop 728x90 (all pages)"],["ad-top-m","Top banner, phone 320x50 (all pages)"],["ad-mid","Middle banner 300x250 (Home only)"],["ad-native","Native banner (all pages)"],["ad-bottom","Bottom banner 300x250 (all pages)"],["ad-social","Social Bar (Home only)"],["ad-popunder","Popunder (Home only)"]];
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 async function api(path,opt){opt=opt||{};opt.headers={"x-admin-password":pw,"content-type":"application/json"};var r=await fetch("/api/"+path,opt);var d=await r.json().catch(function(){return{}});if(!r.ok)throw new Error(d.error||"Error "+r.status);return d}
 function login(msg){
@@ -27,7 +29,7 @@ function login(msg){
 async function start(){
   try{var d=await api("posts");
     if(d===null){try{d=(await(await fetch("/content/posts.json")).json()).posts||[]}catch(e){d=[]}}
-    P=d;panel();
+    P=d;A=(await api("ads"))||{};panel();
   }catch(e){login(e.message)}
 }
 function shrink(f){return new Promise(function(ok,no){var r=new FileReader();r.onload=function(){var i=new Image();i.onload=function(){var s=Math.min(1,1000/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.round(i.width*s);c.height=Math.round(i.height*s);c.getContext("2d").drawImage(i,0,0,c.width,c.height);ok(c.toDataURL("image/jpeg",.82))};i.onerror=no;i.src=r.result};r.onerror=no;r.readAsDataURL(f)})}
@@ -44,9 +46,18 @@ function panel(){
   +'<label for="b">Post text (blank line between paragraphs)</label><textarea id="b">'+esc(e?e.body:"")+'</textarea>'
   +'<button id="pub">'+(e?"Save changes":"Publish post")+'</button>'+(e?'<button class="g" id="cx">Cancel</button>':"")
   +'<div class="m" id="msg">'+esc(note)+'</div></div>'
-  +'<div class="box"><b>All posts ('+P.length+')</b><ul>'+sorted().map(function(o){return '<li><span>'+esc(o.p.title)+'<small>'+o.p.date+' · '+esc(o.p.cat)+'</small></span><span><button class="g s" data-e="'+o.i+'">Edit</button><button class="g s d" data-x="'+o.i+'">'+(dl===o.i?"Confirm":"Delete")+'</button></span></li>'}).join("")+'</ul></div>';
+  +'<div class="box"><b>All posts ('+P.length+')</b><ul>'+sorted().map(function(o){return '<li><span>'+esc(o.p.title)+'<small>'+o.p.date+' · '+esc(o.p.cat)+'</small></span><span><button class="g s" data-e="'+o.i+'">Edit</button><button class="g s d" data-x="'+o.i+'">'+(dl===o.i?"Confirm":"Delete")+'</button></span></li>'}).join("")+'</ul></div>'
+  +'<div class="box"><b>Ad codes (AdSterra)</b><div class="m">Paste each code in its box. An empty box hides that ad.</div>'
+  +AD.map(function(x){return '<label for="'+x[0]+'">'+x[1]+'</label><textarea class="ad" id="'+x[0]+'" spellcheck="false">'+esc(A[x[0]]||"")+'</textarea>'}).join("")
+  +'<button id="sad">Save ad codes</button><div class="m" id="amsg"></div></div>';
   document.getElementById("out").onclick=function(ev){ev.preventDefault();sessionStorage.removeItem("pw");pw="";login()};
   document.getElementById("pub").onclick=save;
+  document.getElementById("sad").onclick=async function(){
+    var m=document.getElementById("amsg"),n={};
+    AD.forEach(function(x){var v=document.getElementById(x[0]).value.trim();if(v)n[x[0]]=v});
+    m.textContent="Saving…";
+    try{await api("ads",{method:"PUT",body:JSON.stringify(n)});A=n;m.textContent="Saved. The site picks it up within a minute."}catch(er){m.textContent="Error: "+er.message}
+  };
   var cx=document.getElementById("cx");if(cx)cx.onclick=function(){ed=null;img="";note="";panel()};
   document.getElementById("f").onchange=async function(){
     var f=this.files[0],fs=document.getElementById("fs");if(!f)return;fs.textContent="Uploading…";
