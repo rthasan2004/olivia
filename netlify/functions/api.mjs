@@ -4,6 +4,7 @@ export default async (req)=>{
   const path=new URL(req.url).pathname.replace(/^\/api\/?/,"");
   const db=getStore("olivia");
   if(req.method==="GET"&&path==="posts"){return json(await db.get("posts",{type:"json"}))}
+  if(req.method==="GET"&&path==="ads"){return json((await db.get("ads",{type:"json"}))||{})}
   if(req.method==="GET"&&path.startsWith("img/")){
     const id=path.slice(4);
     if(!/^[a-z0-9]+$/.test(id))return new Response("Not found",{status:404});
@@ -19,6 +20,15 @@ export default async (req)=>{
     const b=await req.json();
     if(!Array.isArray(b))return json({error:"Bad data"},400);
     await db.setJSON("posts",b);
+    return json({ok:true});
+  }
+  if(req.method==="PUT"&&path==="ads"){
+    const b=await req.json();
+    if(!b||typeof b!=="object"||Array.isArray(b))return json({error:"Bad data"},400);
+    const out={};let n=0;
+    for(const k of Object.keys(b)){if(typeof b[k]==="string"&&/^ad-[a-z-]+$/.test(k)){out[k]=b[k];n+=b[k].length}}
+    if(n>300000)return json({error:"Too large"},400);
+    await db.setJSON("ads",out);
     return json({ok:true});
   }
   if(req.method==="POST"&&path==="img"){
