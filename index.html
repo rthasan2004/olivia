@@ -152,8 +152,9 @@ function post(id){
   window.scrollTo(0,0);
 }
 function route(){var h=location.hash.slice(1);if(h.indexOf("post-")===0)post(h.slice(5));else home()}
-fetch("content/posts.json").then(function(r){return r.json()}).then(function(d){
-  P=(d.posts||[]).map(function(p){p.id=slug(p.title);return p}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0});
+fetch("/api/posts").then(function(r){return r.json()}).then(function(d){return d===null?fetch("content/posts.json").then(function(r){return r.json()}).then(function(s){return s.posts||[]}):d}).then(function(d){
+P=d.map(function(p){p.id=slug(p.title);return p}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0});
+  
   route();window.addEventListener("hashchange",route);
 }).catch(function(){app.innerHTML='<div class="empty">Could not load posts.</div>'});
 
