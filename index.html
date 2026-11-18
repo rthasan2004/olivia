@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
 <title>Olivia Idea – Fashion and Nail Blog</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fbf4f6;--surface:#fff;--ink:#2a1630;--muted:#6f5a75;--line:#e9d9e4;--accent:#7a2e6e;--accent-ink:#fff}
-@media (prefers-color-scheme:dark){:root{--bg:#1b1020;--surface:#26172c;--ink:#f7e9f3;--muted:#b9a3bf;--line:#3d2a45;--accent:#e6a4d8;--accent-ink:#2a1630}}
+:root{--bg:#faf6ee;--surface:#fffdf8;--ink:#3a2f2a;--muted:#85776b;--line:#e8dfcf;--accent:#8a6a3b;--accent-ink:#fff;color-scheme:light}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.7 "DM Sans",system-ui,sans-serif}
 h1,h2,h3{font-family:"Cormorant Garamond",Georgia,serif;line-height:1.15;margin:0;font-weight:700}
@@ -22,7 +22,7 @@ header{padding:20px 0}
 .chip{border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:6px 16px;font:500 15px "DM Sans",sans-serif;cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .card{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden}
-.card .cover{height:140px;display:flex;align-items:flex-end;padding:14px 18px;color:#fff;font:700 15px "DM Sans",sans-serif}
+.card .cover{height:140px;display:flex;align-items:flex-end;padding:14px 18px;color:var(--ink);font:700 15px "DM Sans",sans-serif}
 .card .in{padding:16px 18px 20px}
 .card h3{font-size:26px}
 .card p{margin:8px 0 0;color:var(--muted);font-size:16px}
@@ -31,6 +31,7 @@ header{padding:20px 0}
 .feat .cover{height:100%;min-height:220px;font-size:17px}
 .feat h3{font-size:clamp(28px,4vw,38px)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
+.more{display:block;margin:28px auto 0;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:10px 28px;font:500 16px "DM Sans",sans-serif;cursor:pointer}
 .back{display:inline-block;margin:6px 0 18px;color:var(--muted);text-decoration:none}
 article .cover{height:200px;border-radius:24px;margin-bottom:22px}
 article h1{font-size:clamp(36px,6vw,54px);margin-bottom:8px}
@@ -44,31 +45,35 @@ footer{padding:34px 0 48px;color:var(--muted);font-size:15px}
 <body>
 <div class="wrap" id="app"><div class="empty">Loading…</div></div>
 <script>
-var P=[],app=document.getElementById("app"),filter="All";
+var P=[],app=document.getElementById("app"),filter="All",shown=8,STEP=8;
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function slug(t){return t.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"post"}
 function fmt(d){return new Date(d+"T12:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}
 function paras(b){return b.split(/\n{2,}/).map(function(p){return "<p>"+esc(p).replace(/\n/g,"<br>")+"</p>"}).join("")}
 function excerpt(b){var t=b.split(/\n{2,}/)[0];return t.length>140?t.slice(0,137)+"…":t}
+function soft(c){return "color-mix(in srgb,"+esc(c)+" 28%,#fffdf8)"}
 function head(){return '<header><a class="logo" href="#">Olivia Idea</a></header>'}
 function foot(){return '<footer>© Olivia Idea. New posts every day.</footer>'}
-function card(p,f){return '<a class="card'+(f?' feat':'')+'" href="#post-'+p.id+'"><div class="cover" style="background:'+esc(p.color)+'">'+esc(p.cat)+'</div><div class="in"><div class="meta">'+fmt(p.date)+'</div><h3>'+esc(p.title)+'</h3><p>'+esc(excerpt(p.body))+'</p></div></a>'}
+function card(p,f){return '<a class="card'+(f?' feat':'')+'" href="#post-'+p.id+'"><div class="cover" style="background:'+soft(p.color)+'">'+esc(p.cat)+'</div><div class="in"><div class="meta">'+fmt(p.date)+'</div><h3>'+esc(p.title)+'</h3><p>'+esc(excerpt(p.body))+'</p></div></a>'}
 function home(){
   var cats=["All"];P.forEach(function(p){if(cats.indexOf(p.cat)<0)cats.push(p.cat)});
   if(cats.indexOf(filter)<0)filter="All";
-  var list=P.filter(function(p){return filter==="All"||p.cat===filter});
+  var all=P.filter(function(p){return filter==="All"||p.cat===filter});
+  var list=all.slice(0,shown);
   var h=head()+'<div class="intro"><h1>Fashion and nails, every day.</h1><p>Short, honest notes on what to wear, which polish to pick and how to make both last.</p></div>';
   h+='<div class="chips">'+cats.map(function(c){return '<button class="chip" data-c="'+esc(c)+'" aria-pressed="'+(c===filter)+'">'+esc(c)+'</button>'}).join("")+'</div>';
   if(!list.length)h+='<div class="empty">No posts yet.</div>';
   else{h+=card(list[0],true);if(list.length>1)h+='<div class="grid">'+list.slice(1).map(function(p){return card(p)}).join("")+'</div>'}
+  if(all.length>shown)h+='<button class="more" id="more">Show more</button>';
   app.innerHTML=h+foot();
-  [].forEach.call(app.querySelectorAll(".chip"),function(b){b.onclick=function(){filter=b.dataset.c;home()}});
+  [].forEach.call(app.querySelectorAll(".chip"),function(b){b.onclick=function(){filter=b.dataset.c;shown=STEP;home()}});
+  var m=document.getElementById("more");if(m)m.onclick=function(){shown+=STEP;home()};
 }
 function post(id){
   var p=P.filter(function(x){return x.id===id})[0];
   if(!p){home();return}
   document.title=p.title+" – Olivia Idea";
-  app.innerHTML=head()+'<a class="back" href="#">← All posts</a><article><div class="cover" style="background:'+esc(p.color)+'"></div><div class="meta">'+esc(p.cat)+' · '+fmt(p.date)+'</div><h1>'+esc(p.title)+'</h1><div class="prose">'+paras(p.body)+'</div></article>'+foot();
+  app.innerHTML=head()+'<a class="back" href="#">← All posts</a><article><div class="cover" style="background:'+soft(p.color)+'"></div><div class="meta">'+esc(p.cat)+' · '+fmt(p.date)+'</div><h1>'+esc(p.title)+'</h1><div class="prose">'+paras(p.body)+'</div></article>'+foot();
   window.scrollTo(0,0);
 }
 function route(){var h=location.hash.slice(1);if(h.indexOf("post-")===0)post(h.slice(5));else{document.title="Olivia Idea – Fashion and Nail Blog";home()}}
