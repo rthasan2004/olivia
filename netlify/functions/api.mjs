@@ -1,0 +1,33 @@
+import { getStore } from "@netlify/blobs";
+const json=(d,s=200)=>new Response(JSON.stringify(d),{status:s,headers:{"content-type":"application/json","cache-control":"no-store"}});
+export default async (req)=>{
+  const path=new URL(req.url).pathname.replace(/^\/api\/?/,"");
+  const db=getStore("olivia");
+  if(req.method==="GET"&&path==="posts"){return json(await db.get("posts",{type:"json"}))}
+  if(req.method==="GET"&&path.startsWith("img/")){
+    const id=path.slice(4);
+    if(!/^[a-z0-9]+$/.test(id))return new Response("Not found",{status:404});
+    const d=await db.get("img-"+id);
+    const m=d&&d.match(/^data:(.+?);base64,(.*)$/);
+    if(!m)return new Response("Not found",{status:404});
+    return new Response(Buffer.from(m[2],"base64"),{headers:{"content-type":m[1],"cache-control":"public, max-age=31536000"}});
+  }
+  const pw=process.env.ADMIN_PASSWORD;
+  if(!pw||req.headers.get("x-admin-password")!==pw)return json({error:"Wrong password"},401);
+  if(req.method==="POST"&&path==="login")return json({ok:true});
+  if(req.method==="PUT"&&path==="posts"){
+    const b=await req.json();
+    if(!Array.isArray(b))return json({error:"Bad data"},400);
+    await db.setJSON("posts",b);
+    return json({ok:true});
+  }
+  if(req.method==="POST"&&path==="img"){
+    const b=await req.json();
+    if(typeof b.data!=="string"||!b.data.startsWith("data:image/")||b.data.length>3000000)return json({error:"Bad image"},400);
+    const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+    await db.set("img-"+id,b.data);
+    return json({url:"/api/img/"+id});
+  }
+  return json({error:"Not found"},404);
+};
+export const config={path:"/api/*"};
