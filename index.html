@@ -4,83 +4,141 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
-<title>Olivia Idea – Fashion and Nail Blog</title>
+<title>Olivia Idea – Beauty, Fashion, Inspiration</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#faf6ee;--surface:#fffdf8;--ink:#3a2f2a;--muted:#85776b;--line:#e8dfcf;--accent:#8a6a3b;--accent-ink:#fff;color-scheme:light}
+:root{--bg:#fcf7f4;--ink:#2b2222;--muted:#7d6b6b;--line:#eadbd8;--rose:#c9747f;--rose-d:#b5636e;--blush:#f0cdd0;color-scheme:light}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.7 "DM Sans",system-ui,sans-serif}
 h1,h2,h3{font-family:"Cormorant Garamond",Georgia,serif;line-height:1.15;margin:0;font-weight:700}
 a{color:inherit}
-.wrap{max-width:900px;margin:0 auto;padding:0 20px}
-header{padding:20px 0}
-.logo{font:700 28px "Cormorant Garamond",serif;text-decoration:none}
-.intro{padding:20px 0 28px}
-.intro h1{font-size:clamp(38px,7vw,64px)}
-.intro p{color:var(--muted);max-width:32em;margin:10px 0 0}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 24px}
-.chip{border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:6px 16px;font:500 15px "DM Sans",sans-serif;cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.card{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden}
-.card .cover{height:140px;display:flex;align-items:flex-end;padding:14px 18px;color:var(--ink);font:700 15px "DM Sans",sans-serif}
-.card .in{padding:16px 18px 20px}
-.card h3{font-size:26px}
-.card p{margin:8px 0 0;color:var(--muted);font-size:16px}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+.bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:14px 20px}
+.socs{display:flex;gap:10px}
+.soc{width:28px;height:28px;border-radius:50%;background:var(--rose);color:#fff;font:700 11px/28px "DM Sans",sans-serif;text-align:center;text-decoration:none}
+.brand{text-align:center;text-decoration:none;display:block}
+.mark{display:flex;align-items:center;gap:8px;color:var(--rose);font-size:22px;line-height:1}
+.mark i{flex:1;height:1px;background:var(--rose);min-width:30px}
+.logo{display:block;font:700 clamp(28px,7vw,52px)/1.1 "Cormorant Garamond",serif;letter-spacing:.05em}
+.tag{display:block;font-size:11px;letter-spacing:.22em;text-transform:uppercase}
+.srch{justify-self:end;background:none;border:0;color:var(--ink);padding:6px}
+.sbox{padding:0 20px 12px;text-align:center}
+.sbox input{width:100%;max-width:420px;padding:10px 16px;border-radius:999px;border:1.5px solid var(--line);font:inherit;background:#fff}
+.nav{background:var(--rose);display:flex;justify-content:center;gap:clamp(20px,6vw,56px);padding:0 10px}
+.nav button{background:none;border:0;color:#fff;font:500 15px "DM Sans",sans-serif;letter-spacing:.12em;padding:13px 4px;border-bottom:2px solid transparent}
+.nav button[aria-current="true"]{border-bottom-color:#fff}
+:is(a,button,input):focus-visible{outline:3px solid var(--rose-d);outline-offset:2px}
+.hero{min-height:340px;display:flex;align-items:center;padding:34px 0;background:linear-gradient(90deg,rgba(251,240,238,.96) 0,rgba(251,240,238,.9) 45%,rgba(251,240,238,.1) 100%),url(images/hero.jpg) right center/cover,#f3dcd9}
+.hero h1{font-size:clamp(36px,7vw,62px);max-width:9em}
+.hero p{max-width:20em;margin:14px 0 22px}
+.btn{display:inline-block;background:var(--rose);color:#fff;border-radius:999px;padding:11px 26px;font:500 14px "DM Sans",sans-serif;letter-spacing:.1em;text-decoration:none}
+.ttl{display:flex;align-items:center;gap:18px;margin:36px 0 22px}
+.ttl span{flex:1;height:1px;background:var(--rose)}
+.ttl h2{font-size:clamp(26px,5vw,36px);letter-spacing:.08em;font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.card{display:block;background:#fff;border-radius:8px;overflow:hidden;text-decoration:none;box-shadow:0 2px 10px rgba(120,70,70,.1)}
+.pic{position:relative;aspect-ratio:4/5}
+.pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.chip{position:absolute;left:10px;bottom:10px;background:var(--rose);color:#fff;font:700 11px "DM Sans",sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:4px}
+.card h3{font-size:22px;padding:12px 14px 16px}
+.more{display:block;margin:28px auto 0;border:1.5px solid var(--rose);background:transparent;color:var(--rose-d);border-radius:999px;padding:10px 30px;font:500 15px "DM Sans",sans-serif;letter-spacing:.06em}
+.empty{color:var(--muted);padding:30px 0;text-align:center}
+.back{display:inline-block;margin:26px 0 16px;color:var(--muted);text-decoration:none}
+article .pic{aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin-bottom:22px}
+article h1{font-size:clamp(34px,6vw,52px);margin-bottom:8px}
 .meta{color:var(--muted);font-size:14px;margin-bottom:6px}
-.feat{display:grid;grid-template-columns:1fr 1fr;margin-bottom:22px}
-.feat .cover{height:100%;min-height:220px;font-size:17px}
-.feat h3{font-size:clamp(28px,4vw,38px)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
-.more{display:block;margin:28px auto 0;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:10px 28px;font:500 16px "DM Sans",sans-serif;cursor:pointer}
-.back{display:inline-block;margin:6px 0 18px;color:var(--muted);text-decoration:none}
-article .cover{height:200px;border-radius:24px;margin-bottom:22px}
-article h1{font-size:clamp(36px,6vw,54px);margin-bottom:8px}
-.prose{max-width:36em}.prose p{margin:0 0 1.1em}
-.empty{color:var(--muted);padding:40px 0}
-:is(a,button):focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-footer{padding:34px 0 48px;color:var(--muted);font-size:15px}
-@media(max-width:700px){.feat{grid-template-columns:1fr}.feat .cover{min-height:140px}}
+.prose{max-width:36em;padding-bottom:30px}.prose p{margin:0 0 1.1em}
+footer{margin-top:48px;background:var(--blush);text-align:center;padding:30px 20px 36px}
+footer .logo{font-size:34px}
+footer .socs{justify-content:center;margin-top:14px}
+footer .soc{width:34px;height:34px;line-height:34px;font-size:12px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr);gap:12px}.bar .socs{display:none}.bar{grid-template-columns:1fr auto}.brand{grid-column:1;text-align:left}.card h3{font-size:19px;padding:10px 10px 14px}}
+  @keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.mark i{animation:grow 1.2s .2s ease-out backwards}
+.ttl span{transform-origin:left;animation:grow 1.2s ease-out backwards}
+.ttl span:last-child{transform-origin:right}
+.hero h1{animation:rise .9s .1s ease-out backwards}
+.hero p{animation:rise .9s .35s ease-out backwards}
+.hero .btn{animation:rise .9s .6s ease-out backwards}
+.btn{transition:transform .25s,background .25s}
+.btn:hover{background:var(--rose-d);transform:translateY(-2px)}
+.nav button{transition:border-color .3s,opacity .3s}
+.nav button:hover{opacity:.8}
+.more{transition:background .25s,color .25s}
+.more:hover{background:var(--rose);color:#fff}
+.pic{overflow:hidden}
+.pic img{transition:transform .6s ease}
+.card{animation:rise .7s ease-out backwards;transition:transform .3s,box-shadow .3s}
+.card:nth-child(2){animation-delay:.08s}.card:nth-child(3){animation-delay:.16s}.card:nth-child(4){animation-delay:.24s}
+.card:nth-child(5){animation-delay:.08s}.card:nth-child(6){animation-delay:.16s}.card:nth-child(7){animation-delay:.24s}.card:nth-child(8){animation-delay:.32s}
+.card:hover{transform:translateY(-6px);box-shadow:0 12px 26px rgba(120,70,70,.2)}
+.card:hover .pic img{transform:scale(1.07)}
+article{animation:rise .7s ease-out backwards}
+@supports (animation-timeline:view()){
+.card{animation:rise linear backwards;animation-timeline:view();animation-range:entry 0% entry 45%;animation-delay:0s!important}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="wrap" id="app"><div class="empty">Loading…</div></div>
+<header>
+  <div class="bar">
+    <div class="socs"><a class="soc" href="#" aria-label="Facebook">f</a><a class="soc" href="#" aria-label="Pinterest">P</a><a class="soc" href="#" aria-label="Instagram">IG</a><a class="soc" href="#" aria-label="YouTube">YT</a></div>
+    <a class="brand" href="#" id="brand"><span class="mark"><i></i>♡<i></i></span><span class="logo">OLIVIA IDEA</span><span class="tag">Beauty • Fashion • Inspiration</span></a>
+    <button class="srch" id="sbtn" aria-label="Search"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
+  </div>
+  <div class="sbox" id="sbox" hidden><input id="q" type="search" placeholder="Search ideas…" aria-label="Search ideas"></div>
+  <nav class="nav"><button data-c="All">HOME</button><button data-c="Nails">NAIL</button><button data-c="Fashion">FASHION</button></nav>
+</header>
+<main id="app"><div class="empty">Loading…</div></main>
+<footer>
+  <span class="logo">OLIVIA IDEA</span><span class="tag">Beauty • Fashion • Inspiration</span>
+  <div class="socs"><a class="soc" href="#" aria-label="Facebook">f</a><a class="soc" href="#" aria-label="Pinterest">P</a><a class="soc" href="#" aria-label="Instagram">IG</a><a class="soc" href="#" aria-label="YouTube">YT</a></div>
+</footer>
 <script>
-var P=[],app=document.getElementById("app"),filter="All",shown=8,STEP=8;
+var P=[],app=document.getElementById("app"),filter="All",shown=8,STEP=8,q="";
+var navb=document.querySelectorAll(".nav button");
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function slug(t){return t.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"post"}
 function fmt(d){return new Date(d+"T12:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}
 function paras(b){return b.split(/\n{2,}/).map(function(p){return "<p>"+esc(p).replace(/\n/g,"<br>")+"</p>"}).join("")}
-function excerpt(b){var t=b.split(/\n{2,}/)[0];return t.length>140?t.slice(0,137)+"…":t}
-function soft(c){return "color-mix(in srgb,"+esc(c)+" 28%,#fffdf8)"}
-function head(){return '<header><a class="logo" href="#">Olivia Idea</a></header>'}
-function foot(){return '<footer>© Olivia Idea. New posts every day.</footer>'}
-function card(p,f){return '<a class="card'+(f?' feat':'')+'" href="#post-'+p.id+'"><div class="cover" style="background:'+soft(p.color)+'">'+esc(p.cat)+'</div><div class="in"><div class="meta">'+fmt(p.date)+'</div><h3>'+esc(p.title)+'</h3><p>'+esc(excerpt(p.body))+'</p></div></a>'}
+function soft(c){return "color-mix(in srgb,"+esc(c||"#c9747f")+" 30%,#fff)"}
+function lab(c){return c==="Nails"?"Nail":c}
+function pic(p,chip){return '<div class="pic" style="background:'+soft(p.color)+'">'+(p.image?'<img src="'+esc(p.image)+'" alt="" loading="lazy">':'')+(chip?'<span class="chip">'+esc(lab(p.cat))+'</span>':'')+'</div>'}
+function setNav(on){[].forEach.call(navb,function(b){b.setAttribute("aria-current",on&&b.dataset.c===filter)})}
+function go(c){filter=c;shown=STEP;q="";document.getElementById("q").value="";if(location.hash.length>1)location.hash="";else home()}
+[].forEach.call(navb,function(b){b.onclick=function(){go(b.dataset.c)}});
+document.getElementById("brand").onclick=function(e){e.preventDefault();go("All")};
+document.getElementById("sbtn").onclick=function(){var s=document.getElementById("sbox");s.hidden=!s.hidden;if(!s.hidden)document.getElementById("q").focus()};
+document.getElementById("q").oninput=function(){q=this.value.toLowerCase();shown=STEP;if(location.hash.length>1)location.hash="";else ideas()};
+function ideas(){
+  var all=P.filter(function(p){return(filter==="All"||p.cat===filter)&&(!q||(p.title+" "+p.body).toLowerCase().indexOf(q)>-1)});
+  var h=all.length?'<div class="grid">'+all.slice(0,shown).map(function(p){return '<a class="card" href="#post-'+p.id+'">'+pic(p,true)+'<h3>'+esc(p.title)+'</h3></a>'}).join("")+'</div>':'<div class="empty">No posts found.</div>';
+  if(all.length>shown)h+='<button class="more" id="more">SHOW MORE</button>';
+  document.getElementById("ideas").innerHTML=h;
+  var m=document.getElementById("more");if(m)m.onclick=function(){shown+=STEP;ideas()};
+}
 function home(){
-  var cats=["All"];P.forEach(function(p){if(cats.indexOf(p.cat)<0)cats.push(p.cat)});
-  if(cats.indexOf(filter)<0)filter="All";
-  var all=P.filter(function(p){return filter==="All"||p.cat===filter});
-  var list=all.slice(0,shown);
-  var h=head()+'<div class="intro"><h1>Fashion and nails, every day.</h1><p>Short, honest notes on what to wear, which polish to pick and how to make both last.</p></div>';
-  h+='<div class="chips">'+cats.map(function(c){return '<button class="chip" data-c="'+esc(c)+'" aria-pressed="'+(c===filter)+'">'+esc(c)+'</button>'}).join("")+'</div>';
-  if(!list.length)h+='<div class="empty">No posts yet.</div>';
-  else{h+=card(list[0],true);if(list.length>1)h+='<div class="grid">'+list.slice(1).map(function(p){return card(p)}).join("")+'</div>'}
-  if(all.length>shown)h+='<button class="more" id="more">Show more</button>';
-  app.innerHTML=h+foot();
-  [].forEach.call(app.querySelectorAll(".chip"),function(b){b.onclick=function(){filter=b.dataset.c;shown=STEP;home()}});
-  var m=document.getElementById("more");if(m)m.onclick=function(){shown+=STEP;home()};
+  document.title="Olivia Idea – Beauty, Fashion, Inspiration";setNav(true);
+  app.innerHTML='<div class="hero"><div class="wrap"><h1>A little inspiration for every day.</h1><p>Discover fresh nail art, effortless fashion and ideas worth saving.</p><a class="btn" href="#" id="ex">EXPLORE IDEAS →</a></div></div><div class="wrap"><div class="ttl" id="latest"><span></span><h2>LATEST IDEAS</h2><span></span></div><div id="ideas"></div></div>';
+  document.getElementById("ex").onclick=function(e){e.preventDefault();document.getElementById("latest").scrollIntoView({behavior:"smooth"})};
+  ideas();
 }
 function post(id){
   var p=P.filter(function(x){return x.id===id})[0];
   if(!p){home();return}
-  document.title=p.title+" – Olivia Idea";
-  app.innerHTML=head()+'<a class="back" href="#">← All posts</a><article><div class="cover" style="background:'+soft(p.color)+'"></div><div class="meta">'+esc(p.cat)+' · '+fmt(p.date)+'</div><h1>'+esc(p.title)+'</h1><div class="prose">'+paras(p.body)+'</div></article>'+foot();
+  document.title=p.title+" – Olivia Idea";setNav(false);
+  app.innerHTML='<div class="wrap"><a class="back" href="#">← All ideas</a><article>'+pic(p,false)+'<div class="meta">'+esc(lab(p.cat))+' · '+fmt(p.date)+'</div><h1>'+esc(p.title)+'</h1><div class="prose">'+paras(p.body)+'</div></article></div>';
   window.scrollTo(0,0);
 }
-function route(){var h=location.hash.slice(1);if(h.indexOf("post-")===0)post(h.slice(5));else{document.title="Olivia Idea – Fashion and Nail Blog";home()}}
+function route(){var h=location.hash.slice(1);if(h.indexOf("post-")===0)post(h.slice(5));else home()}
 fetch("content/posts.json").then(function(r){return r.json()}).then(function(d){
   P=(d.posts||[]).map(function(p){p.id=slug(p.title);return p}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0});
   route();window.addEventListener("hashchange",route);
-}).catch(function(){app.innerHTML=head()+'<div class="empty">Could not load posts.</div>'});
+}).catch(function(){app.innerHTML='<div class="empty">Could not load posts.</div>'});
 </script>
 </body>
 </html>
